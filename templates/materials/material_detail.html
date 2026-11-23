@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ material.title }} — StudyHub{% endblock %}
+{% block content %}
+<article class="card detail">
+    <span class="badge">{{ material.category.name }}</span>
+    <h1>{{ material.title }}</h1>
+    <p class="meta">
+        Автор: {{ material.author.username }} ·
+        Загружен: {{ material.uploaded_at|date:'d.m.Y H:i' }} ·
+        Обновлён: {{ material.updated_at|date:'d.m.Y H:i' }}
+    </p>
+    <p class="meta">
+        Видимость: {{ material.get_visibility_display }} ·
+        Скачиваний: {{ material.downloads_count }}
+    </p>
+
+    {% if material.description %}
+        <p>{{ material.description|linebreaks }}</p>
+    {% endif %}
+
+    {% if material.tags.all %}
+        <p class="tags">
+            {% for tag in material.tags.all %}<span class="tag">#{{ tag.name }}</span>{% endfor %}
+        </p>
+    {% endif %}
+
+    <div class="actions">
+        <a class="button primary" href="{% url 'materials:download' material.pk %}">Скачать файл</a>
+        {% if material|length is not None %}{% endif %}
+        {% if user.is_authenticated %}
+            {% if material.author_id == user.id or user.is_teacher %}
+                <a class="button" href="{% url 'materials:update' material.pk %}">Редактировать</a>
+                <a class="button danger" href="{% url 'materials:delete' material.pk %}">Удалить</a>
+            {% endif %}
+        {% endif %}
+        <a class="button ghost" href="{% url 'materials:list' %}">К списку</a>
+    </div>
+</article>
+{% endblock %}

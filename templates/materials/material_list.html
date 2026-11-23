@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Учебные материалы — StudyHub{% endblock %}
+{% block content %}
+<h1>Учебные материалы</h1>
+
+<form method="get" class="filters card">
+    <input type="search" name="q" value="{{ search_query }}"
+           placeholder="Поиск по названию, описанию, тегу">
+    <select name="category">
+        <option value="">Все категории</option>
+        {% for category in categories %}
+            <option value="{{ category.slug }}"
+                {% if category.slug == current_category %}selected{% endif %}>
+                {{ category.name }}
+            </option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="button">Найти</button>
+    <a href="{% url 'materials:list' %}" class="button ghost">Сбросить</a>
+</form>
+
+{% if materials %}
+    <div class="grid">
+        {% for material in materials %}
+            <article class="card material-card">
+                <span class="badge">{{ material.category.name }}</span>
+                <h2><a href="{{ material.get_absolute_url }}">{{ material.title }}</a></h2>
+                <p class="muted">{{ material.description|default:'Без описания'|truncatewords:18 }}</p>
+                <p class="meta">
+                    Автор: {{ material.author.username }} ·
+                    {{ material.uploaded_at|date:'d.m.Y H:i' }} ·
+                    Скачиваний: {{ material.downloads_count }}
+                </p>
+                {% if material.tags.all %}
+                    <p class="tags">
+                        {% for tag in material.tags.all %}<span class="tag">#{{ tag.name }}</span>{% endfor %}
+                    </p>
+                {% endif %}
+                <div class="actions">
+                    <a class="button" href="{% url 'materials:download' material.pk %}">Скачать</a>
+                    {% if material.can_edit %}
+                        <a class="button ghost" href="{% url 'materials:update' material.pk %}">Изменить</a>
+                    {% endif %}
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&q={{ search_query }}&category={{ current_category }}">← Назад</a>
+            {% endif %}
+            <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&q={{ search_query }}&category={{ current_category }}">Вперёд →</a>
+            {% endif %}
+        </nav>
+    {% endif %}
+{% else %}
+    <p class="empty">Материалы не найдены. Измените условия поиска или загрузите первый материал.</p>
+{% endif %}
+{% endblock %}

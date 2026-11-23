@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Загрузка материала — StudyHub{% endblock %}
+{% block content %}
+<h1>{% if object %}Редактирование материала{% else %}Загрузка материала{% endif %}</h1>
+
+<form method="post" enctype="multipart/form-data" class="card form-card" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    {% for field in form %}
+        <div class="form-row">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<small class="help">{{ field.help_text|safe }}</small>{% endif %}
+            {% if field.errors %}<div class="field-error">{{ field.errors|striptags }}</div>{% endif %}
+        </div>
+    {% endfor %}
+
+    <p class="hint">
+        Допустимые форматы: PDF, DOCX, PPTX, XLSX, ZIP, TXT. Максимальный размер — 10 МБ.
+    </p>
+
+    <button type="submit" class="button primary">Сохранить</button>
+    <a class="button ghost" href="{% url 'materials:list' %}">Отмена</a>
+</form>
+{% endblock %}

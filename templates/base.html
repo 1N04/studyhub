@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}StudyHub — учебные материалы{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" href="{% url 'materials:list' %}">StudyHub</a>
+    <nav class="nav">
+        {% if user.is_authenticated %}
+            <a href="{% url 'materials:list' %}">Материалы</a>
+            <a href="{% url 'materials:create' %}">Загрузить</a>
+            {% if user.is_teacher %}
+                <a href="{% url 'materials:category_create' %}">Новая категория</a>
+                <a href="/admin/">Админка</a>
+            {% endif %}
+            <span class="user-badge">{{ user.username }} · {{ user.get_role_display }}</span>
+            <form method="post" action="{% url 'accounts:logout' %}" class="inline-form">
+                {% csrf_token %}
+                <button type="submit" class="link-button">Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'accounts:login' %}">Вход</a>
+            <a href="{% url 'accounts:register' %}">Регистрация</a>
+        {% endif %}
+    </nav>
+</header>
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="message {{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<main class="container">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <p>StudyHub · Курсовой проект по дисциплине «Компьютерное моделирование», КОМТЕХНО, 2026</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Удаление материала — StudyHub{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Удалить материал?</h1>
+    <p>Вы собираетесь удалить «{{ object.title }}». Действие необратимо.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="button danger">Удалить</button>
+        <a class="button ghost" href="{{ object.get_absolute_url }}">Отмена</a>
+    </form>
+</div>
+{% endblock %}

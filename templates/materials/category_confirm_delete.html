@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Удаление категории — StudyHub{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Удалить категорию «{{ object.name }}»?</h1>
+    <p>Категорию нельзя удалить, пока к ней привязаны материалы.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="button danger">Удалить</button>
+        <a class="button ghost" href="{% url 'materials:list' %}">Отмена</a>
+    </form>
+</div>
+{% endblock %}

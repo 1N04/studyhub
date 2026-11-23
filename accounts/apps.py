@@ -1,0 +1,10 @@
+"""Конфигурация приложения accounts."""
+from django.apps import AppConfig
+
+
+class AccountsConfig(AppConfig):
+    """Регистрирует приложение аутентификации и ролей."""
+
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'accounts'
+    verbose_name = 'Пользователи и роли'

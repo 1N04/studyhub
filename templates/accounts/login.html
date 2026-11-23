@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Вход — StudyHub{% endblock %}
+{% block content %}
+<h1>Вход в систему</h1>
+
+<form method="post" class="card form-card" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    {% for field in form %}
+        <div class="form-row">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div class="field-error">{{ field.errors|striptags }}</div>{% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="button primary">Войти</button>
+</form>
+
+<p class="hint">Нет аккаунта? <a href="{% url 'accounts:register' %}">Зарегистрироваться</a></p>
+{% endblock %}
